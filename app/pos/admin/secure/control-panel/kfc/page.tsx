@@ -327,6 +327,9 @@ export default function POSBilling() {
       if (storedRole) {
         sessionStorage.setItem("pos_role", storedRole);
         setRole(storedRole as 'staff' | 'admin');
+        if (storedRole === 'staff') {
+          setActiveTab('billing');
+        }
       } else {
         setRole('admin');
       }
@@ -342,6 +345,9 @@ export default function POSBilling() {
       sessionStorage.setItem("pos_authorized", "true");
       sessionStorage.setItem("pos_role", result.role || "admin");
       setRole(result.role as 'staff' | 'admin');
+      if (result.role === 'staff') {
+        setActiveTab('billing');
+      }
       setIsAuthorized(true);
       setPasscode("");
       setPasscodeError("");
@@ -707,7 +713,7 @@ export default function POSBilling() {
     const moneyEmoji = String.fromCodePoint(0x1F4B0);
     const receiptEmoji = String.fromCodePoint(0x1F4E6);
 
-    let message = `${shopEmoji} *Korean Fried Chikin* ${shopEmoji}\n\n`;
+    let message = `${shopEmoji} *Korean Fried Chicken* ${shopEmoji}\n\n`;
     message += `${checkEmoji} Thank you for shopping with us!\n\n`;
     
     if (calculatedDiscount > 0) {
@@ -1038,7 +1044,7 @@ export default function POSBilling() {
               <img src="/logo.png" alt="KFC Logo" className="w-full h-full object-contain" />
             </div>
             <h2 className="text-xl font-black text-[#000000]  tracking-wider text-center">
-              Korean Fried Chikin
+              Korean Fried Chicken
             </h2>
             <p className="text-xs text-[#000000] font-semibold tracking-wide text-center mt-1.5 mb-8">
               POS Billing System Access Control
@@ -1338,7 +1344,7 @@ export default function POSBilling() {
                 </div>
                 <div>
                   <span className="font-black text-sm tracking-tight text-[#FFFFFF] block ">
-                    Korean Fried Chikin
+                    Korean Fried Chicken
                   </span>
                 </div>
               </div>
@@ -1410,7 +1416,7 @@ export default function POSBilling() {
             <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center bg-black shrink-0">
               <span className="text-white font-bold text-sm">U</span>
             </div>
-            <p className="text-[10px] text-white/40 mt-1 font-semibold uppercase tracking-wider">
+            <p className="text-[10px] text-[#FCD814] mt-1 font-semibold uppercase tracking-wider">
               V2.1.0 • PREMIUM POS
             </p>
           </div>
@@ -1432,7 +1438,7 @@ export default function POSBilling() {
             )}
             <div>
               <h1 className="text-lg font-black text-[#000000] tracking-tight ">
-                Korean Fried Chikin
+                Korean Fried Chicken
               </h1>
             </div>
           </div>
@@ -2002,7 +2008,7 @@ export default function POSBilling() {
           </div>
         )}
 
-        {activeTab === "orders" && (
+        {role === "admin" && activeTab === "orders" && (
           <div className="flex-1 flex flex-col max-w-[1400px] mx-auto w-full pb-8 pr-2 animate-in fade-in duration-300">
             {/* Header Panel */}
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
@@ -2252,7 +2258,7 @@ export default function POSBilling() {
           </div>
         )}
 
-        {activeTab === "analytics" && (
+        {role === "admin" && activeTab === "analytics" && (
           <div className="flex-1 flex flex-col max-w-[1400px] min-w-0 mx-auto w-full pb-8 pr-2">
             {/* Header Panel */}
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
@@ -3479,7 +3485,7 @@ export default function POSBilling() {
           </div>
           <div className="italic text-[#4B5563] font-bold tracking-[0.15em] flex items-center gap-1.5">
             <span className="w-1 h-1 bg-[#DC2626] rounded-full"></span>
-            Tailored. Timeless. Crafted.
+            Fresh. Crispy. Delicious.
           </div>
         </footer>
       </main>

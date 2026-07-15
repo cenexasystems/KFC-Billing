@@ -120,9 +120,9 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
         {/* Header Section */}
         <div className="bg-[#ffffff] border-b border-[#e5e5e5] p-8 sm:p-12 print:p-6 flex flex-col items-center text-center">
           <div className="w-24 h-24 flex items-center justify-center mb-4">
-            <img src="/logo.png" alt="Korean Fried Chikin Logo" className="max-w-full max-h-full object-contain" />
+            <img src="/logo.png" alt="Korean Fried Chicken Logo" className="max-w-full max-h-full object-contain" />
           </div>
-          <h1 className="text-3xl font-black text-[#E60000] tracking-tight ">Korean Fried Chikin</h1>
+          <h1 className="text-3xl font-black text-[#E60000] tracking-tight ">Korean Fried Chicken</h1>
             <p className="text-xs text-[#FCD814] font-bold tracking-wider mt-1 mb-4">INVOICE: {order.id}</p>
           
           <div className="flex flex-col items-center gap-2 text-sm text-[#4C3D32] font-semibold">
@@ -130,11 +130,11 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
               <span className="inline-block text-[#FCD814] mr-1.5 align-middle -mt-0.5">
                 <MapPin className="w-3.5 h-3.5" />
               </span>
-              <span>131, Eldams Rd, Subbarayan Nagar, Teynampet, Chennai, Tamil Nadu 600018</span>
+              <span>Nanjappa Garden Selvapuram, Shivalaya Mahal road, SBI Bank Opposite, Komarapalayam, Combatore.</span>
             </div>
             <div className="flex items-center gap-1.5 justify-center">
               <Phone className="w-3.5 h-3.5 text-[#FCD814] shrink-0" />
-              <span>+91 {process.env.NEXT_PUBLIC_STORE_PHONE}</span>
+              <span>+91 9342489391</span>
             </div>
           </div>
         </div>

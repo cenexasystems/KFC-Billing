@@ -1,4 +1,4 @@
-import { ShoppingBag, MapPin, Clock } from "lucide-react";
+import { ShoppingBag, MapPin, Clock, Phone } from "lucide-react";
 
 export default function Home() {
   return (
@@ -11,7 +11,7 @@ export default function Home() {
           </div>
           <div>
             <span className="text-sm font-black text-[#E60000] tracking-wider uppercase block">
-              Korean Fried Chikin
+              Korean Fried Chicken
             </span>
             <span className="text-[9px] text-[#B48600] font-bold tracking-widest block uppercase -mt-0.5">
               Premium Fried Chicken & Beverages
@@ -30,7 +30,7 @@ export default function Home() {
           </span>
           
           <h1 className="text-3xl font-black text-[#E60000] leading-tight tracking-tight mb-2">
-            Korean Fried Chikin
+            Korean Fried Chicken
           </h1>
           <p className="text-xs text-[#B48600] font-black tracking-widest uppercase mb-8">
             Fried Chicken & Beverages
@@ -42,7 +42,17 @@ export default function Home() {
               <div>
                 <p className="text-[10px] font-bold text-[#666666]/85 uppercase tracking-wider mb-0.5">Address</p>
                 <p className="text-[#000000] leading-relaxed">
-                  131, Eldams Rd, Teynampet, Chennai, Tamil Nadu 600018
+                  Nanjappa Garden Selvapuram, Shivalaya Mahal road, SBI Bank Opposite, Komarapalayam, Combatore.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4">
+              <Phone className="w-5 h-5 text-[#B48600] shrink-0 mt-0.5" />
+              <div>
+                <p className="text-[10px] font-bold text-[#666666]/85 uppercase tracking-wider mb-0.5">Phone Number</p>
+                <p className="text-[#000000]">
+                  +91 9342489391
                 </p>
               </div>
             </div>
@@ -63,7 +73,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-[#e5e5e5]/50 py-6 text-center bg-[#EAE3CD]">
         <p className="text-[10px] font-bold text-[#B48600] tracking-widest uppercase">
-          Korean Fried Chikin • Chennai
+          Korean Fried Chicken • Coimbatore
         </p>
         <p className="text-[9px] font-semibold text-[#666666]/85 uppercase tracking-wider mt-1">
           © {new Date().getFullYear()} All Rights Reserved • Powered by Cenexa Systems
