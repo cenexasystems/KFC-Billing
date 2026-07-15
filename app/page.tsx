@@ -2,7 +2,7 @@ import { ShoppingBag, MapPin, Clock } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#ffffff] text-[#000000] font-sans flex flex-col justify-between selection:bg-[#FCD814] selection:text-black">
+    <div className="min-h-screen bg-[#F5F0E1] text-[#000000] font-sans flex flex-col justify-between selection:bg-[#FCD814] selection:text-black">
       {/* Header */}
       <header className="border-b border-[#e5e5e5]/50 py-6 px-6 sm:px-12 flex justify-center items-center bg-white/60 backdrop-blur-md sticky top-0 z-40">
         <div className="flex items-center gap-3">
@@ -13,7 +13,7 @@ export default function Home() {
             <span className="text-sm font-black text-[#E60000] tracking-wider uppercase block">
               Korean Fried Chikin
             </span>
-            <span className="text-[9px] text-[#FCD814] font-bold tracking-widest block uppercase -mt-0.5">
+            <span className="text-[9px] text-[#B48600] font-bold tracking-widest block uppercase -mt-0.5">
               Premium Fried Chicken & Beverages
             </span>
           </div>
@@ -22,23 +22,23 @@ export default function Home() {
 
       {/* Main Info */}
       <main className="flex-1 max-w-xl mx-auto w-full px-6 flex flex-col justify-center items-center py-16">
-        <div className="bg-white border border-[#e5e5e5] rounded-2xl p-8 sm:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.06)] w-full text-center relative overflow-hidden">
+        <div className="bg-[#FAF7F0] border border-[#e5e5e5] rounded-2xl p-8 sm:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.06)] w-full text-center relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1.5 bg-[#FCD814]" />
           
-          <span className="inline-block px-3 py-1 bg-[#FCD814]/10 border border-[#FCD814]/20 text-[#FCD814] text-[10px] font-bold rounded-full tracking-wider uppercase mb-6">
+          <span className="inline-block px-3 py-1 bg-[#FCD814]/20 border border-[#FCD814]/30 text-[#9A7300] text-[10px] font-bold rounded-full tracking-wider uppercase mb-6">
             Store Directory & Contacts
           </span>
           
           <h1 className="text-3xl font-black text-[#E60000] leading-tight tracking-tight mb-2">
             Korean Fried Chikin
           </h1>
-          <p className="text-xs text-[#FCD814] font-black tracking-widest uppercase mb-8">
+          <p className="text-xs text-[#B48600] font-black tracking-widest uppercase mb-8">
             Fried Chicken & Beverages
           </p>
 
           <div className="space-y-6 text-left max-w-sm mx-auto text-sm font-semibold text-[#4C3D32] border-t border-[#e5e5e5]/50 pt-8">
             <div className="flex items-start gap-4">
-              <MapPin className="w-5 h-5 text-[#FCD814] shrink-0 mt-0.5" />
+              <MapPin className="w-5 h-5 text-[#B48600] shrink-0 mt-0.5" />
               <div>
                 <p className="text-[10px] font-bold text-[#666666]/85 uppercase tracking-wider mb-0.5">Address</p>
                 <p className="text-[#000000] leading-relaxed">
@@ -48,7 +48,7 @@ export default function Home() {
             </div>
 
             <div className="flex items-start gap-4">
-              <Clock className="w-5 h-5 text-[#FCD814] shrink-0 mt-0.5" />
+              <Clock className="w-5 h-5 text-[#B48600] shrink-0 mt-0.5" />
               <div>
                 <p className="text-[10px] font-bold text-[#666666]/85 uppercase tracking-wider mb-0.5">Business Hours</p>
                 <p className="text-[#000000]">
@@ -61,8 +61,8 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[#e5e5e5]/50 py-6 text-center bg-[#f5f5f5]">
-        <p className="text-[10px] font-bold text-[#FCD814] tracking-widest uppercase">
+      <footer className="border-t border-[#e5e5e5]/50 py-6 text-center bg-[#EAE3CD]">
+        <p className="text-[10px] font-bold text-[#B48600] tracking-widest uppercase">
           Korean Fried Chikin • Chennai
         </p>
         <p className="text-[9px] font-semibold text-[#666666]/85 uppercase tracking-wider mt-1">
