@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "UPDATE Men's Wear ",
+  title: "Korean Fried Chikin",
   description: "",
 };
 

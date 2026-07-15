@@ -19,7 +19,7 @@ body {
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #FCD814;
+  background: #7a6802;
 }
 
 @layer utilities {
