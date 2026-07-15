@@ -29,6 +29,9 @@ import {
   LogOut,
   Eye,
   EyeOff,
+  ShieldCheck,
+  Shield,
+  Lock,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { verifyPasscode } from "@/app/pos/actions";
@@ -1036,59 +1039,94 @@ export default function POSBilling() {
 
   if (!isAuthorized) {
     return (
-      <div className="min-h-screen bg-[#FFFFFF] flex items-center justify-center p-4 font-sans">
-        <div className="w-full max-w-md bg-white border border-black/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.08)] overflow-hidden relative">
-          <div className="h-2 bg-[#FCD814] w-full" />
-          <div className="p-8 flex flex-col items-center">
-            <div className="w-24 h-24 mb-6 overflow-hidden flex items-center justify-center">
-              <img src="/logo.png" alt="KFC Logo" className="w-full h-full object-contain" />
+      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center p-6 relative overflow-hidden font-sans">
+        {/* Abstract Background Orbs */}
+        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#E60000]/20 rounded-full blur-[120px] mix-blend-screen animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-[#FCD814]/10 rounded-full blur-[120px] mix-blend-screen animate-pulse" style={{ animationDelay: '2s' }} />
+        
+        {/* Main Container */}
+        <div className="relative z-10 w-full max-w-6xl flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+          
+          {/* Left Side Branding */}
+          <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left">
+            <div className="w-24 h-24 bg-white/5 backdrop-blur-xl rounded-3xl p-4 border border-white/10 shadow-2xl mb-8 group hover:scale-105 transition-transform duration-500">
+              <img src="/logo.png" alt="Logo" className="w-full h-full object-contain drop-shadow-lg group-hover:rotate-12 transition-transform duration-500" />
             </div>
-            <h2 className="text-xl font-black text-[#000000]  tracking-wider text-center">
-              Korean Fried Chicken
-            </h2>
-            <p className="text-xs text-[#000000] font-semibold tracking-wide text-center mt-1.5 mb-8">
-              POS Billing System Access Control
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full mb-6 backdrop-blur-md">
+              <span className="w-2 h-2 rounded-full bg-[#E60000] animate-pulse" />
+              <span className="text-[10px] font-bold text-white/80 tracking-widest uppercase">System Online</span>
+            </div>
+            <h1 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-white/90 to-white/40 tracking-tight leading-[1.1] mb-6">
+              Next-Gen <br/> POS Control.
+            </h1>
+            <p className="text-white/50 text-base md:text-lg font-medium leading-relaxed max-w-md">
+              Seamlessly manage orders, analytics, and digital invoices for Korean Fried Chicken through a unified, hyper-fast portal.
             </p>
-            <form onSubmit={handleVerifyPasscode} className="w-full space-y-5">
-              <div>
-                <label className="block text-[10px] font-bold text-[#000000] uppercase tracking-[0.15em] mb-2">
-                  Enter Passcode
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPasscode ? "text" : "password"}
-                    name="update-pos-passcode"
-                    autoComplete="new-password"
-                    placeholder="Enter Passcode..."
-                    className="w-full bg-[#FFFFFF]/40 border border-black/10 hover:border-black/10 focus:border-[#FCD814] focus:bg-white rounded-lg px-4 py-3 text-center text-lg font-bold text-[#000000] focus:outline-none transition-colors placeholder:text-[#000000]/40"
-                    value={passcode}
-                    onChange={(e) => {
-                      setPasscode(e.target.value);
-                      if (passcodeError) setPasscodeError("");
-                    }}
-                    autoFocus
-                  />
+          </div>
+
+          {/* Right Side Login Card */}
+          <div className="w-full lg:w-1/2 max-w-md">
+            <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-8 md:p-12 shadow-[0_20px_70px_rgba(0,0,0,0.5)] relative overflow-hidden group">
+              
+              {/* Card internal glow */}
+              <div className="absolute -top-24 -right-24 w-48 h-48 bg-[#FCD814]/20 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              
+              <div className="relative z-10">
+                <h3 className="text-2xl font-bold text-white mb-2">Welcome Back</h3>
+                <p className="text-white/40 text-sm font-medium mb-10">Enter your secure passcode to access the terminal.</p>
+                
+                <form onSubmit={handleVerifyPasscode} className="space-y-6">
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-bold text-white/60 uppercase tracking-[0.2em] ml-1">
+                      Security Passcode
+                    </label>
+                    <div className="relative">
+                      <div className="absolute left-5 top-1/2 -translate-y-1/2 text-white/30">
+                        <Lock className="w-5 h-5" />
+                      </div>
+                      <input
+                        type={showPasscode ? "text" : "password"}
+                        name="update-pos-passcode"
+                        autoComplete="new-password"
+                        placeholder="••••••••"
+                        className="w-full bg-black/40 border border-white/10 hover:border-white/20 focus:border-[#E60000] focus:bg-black/60 rounded-2xl pl-14 pr-14 py-4 text-white font-bold tracking-widest text-lg focus:outline-none transition-all placeholder:text-white/20"
+                        value={passcode}
+                        onChange={(e) => {
+                          setPasscode(e.target.value);
+                          if (passcodeError) setPasscodeError("");
+                        }}
+                        autoFocus
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPasscode(!showPasscode)}
+                        className="absolute right-5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/80 transition-colors cursor-pointer"
+                      >
+                        {showPasscode ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      </button>
+                    </div>
+                    {passcodeError && (
+                      <p className="text-xs text-[#E60000] font-bold mt-2 ml-1 animate-in fade-in slide-in-from-top-1">
+                        {passcodeError}
+                      </p>
+                    )}
+                  </div>
+                  
                   <button
-                    type="button"
-                    onClick={() => setShowPasscode(!showPasscode)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-black/40 hover:text-[#FCD814] transition-colors cursor-pointer"
+                    type="submit"
+                    className="w-full py-4 bg-gradient-to-r from-[#E60000] to-[#990000] hover:from-[#FF1A1A] hover:to-[#CC0000] active:scale-[0.98] text-white rounded-2xl font-bold text-sm uppercase tracking-[0.15em] transition-all shadow-[0_10px_30px_rgba(230,0,0,0.3)] hover:shadow-[0_10px_40px_rgba(230,0,0,0.5)] flex items-center justify-center gap-3 mt-4 group cursor-pointer"
                   >
-                    {showPasscode ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    Authenticate
+                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </button>
-                </div>
-                {passcodeError && (
-                  <p className="text-xs text-[#E11D48] font-bold mt-2 text-center animate-pulse">
-                    {passcodeError}
-                  </p>
-                )}
+                </form>
               </div>
-              <button
-                type="submit"
-                className="w-full py-3.5 bg-[#FCD814] hover:bg-[#6A1624] active:scale-98 text-[#FFFFFF] rounded-xl font-bold text-xs uppercase tracking-[0.15em] transition-all shadow-md cursor-pointer"
-              >
-                Access System
-              </button>
-            </form>
+            </div>
+            
+            <div className="mt-8 flex items-center justify-center gap-2 text-white/30 text-[10px] font-bold tracking-widest uppercase">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              End-to-End Encrypted Session
+            </div>
           </div>
         </div>
       </div>
