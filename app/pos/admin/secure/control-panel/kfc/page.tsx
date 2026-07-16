@@ -32,6 +32,7 @@ import {
   ShieldCheck,
   Shield,
   Lock,
+  Printer,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { verifyPasscode } from "@/app/pos/actions";
@@ -302,6 +303,7 @@ export default function POSBilling() {
   const [catalog, setCatalog] = useState<CatalogItem[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [editingCatalogId, setEditingCatalogId] = useState<string | null>(null);
+  const [activeInvoiceId, setActiveInvoiceId] = useState<string | null>(null);
 
   // Analytics filter/navigation states
   const [analyticsPeriod, setAnalyticsPeriod] = useState<
@@ -895,7 +897,7 @@ export default function POSBilling() {
   > = {};
   analyticsFilteredOrders.forEach((order) => {
     order.items.forEach((item) => {
-      if (!item.name) return;
+      if (!item.name || item.name.startsWith("GST (")) return;
       if (!itemSales[item.name])
         itemSales[item.name] = { name: item.name, revenue: 0, qty: 0 };
       itemSales[item.name].revenue += item.price * item.qty;
@@ -1022,7 +1024,7 @@ export default function POSBilling() {
     .reduce((acc, o) => acc + o.grandTotal, 0);
 
   const todayItemsSold = todayOrders.reduce(
-    (acc, o) => acc + o.items.reduce((sum, item) => sum + item.qty, 0),
+    (acc, o) => acc + o.items.reduce((sum, item) => sum + ((item.name && !item.name.startsWith("GST (")) ? item.qty : 0), 0),
     0,
   );
 
@@ -1033,7 +1035,7 @@ export default function POSBilling() {
   > = {};
   todayOrders.forEach((order) => {
     order.items.forEach((item) => {
-      if (!item.name) return;
+      if (!item.name || item.name.startsWith("GST (")) return;
       if (!todayItemSales[item.name])
         todayItemSales[item.name] = { name: item.name, revenue: 0, qty: 0 };
       todayItemSales[item.name].revenue += item.price * item.qty;
@@ -1054,13 +1056,14 @@ export default function POSBilling() {
     .reduce((acc, o) => acc + o.grandTotal, 0);
 
   const totalItemsSold = analyticsFilteredOrders.reduce(
-    (acc, o) => acc + o.items.reduce((sum, item) => sum + item.qty, 0),
+    (acc, o) => acc + o.items.reduce((sum, item) => sum + ((item.name && !item.name.startsWith("GST (")) ? item.qty : 0), 0),
     0,
   );
 
   const categorySales: Record<string, number> = {};
   analyticsFilteredOrders.forEach((order) => {
     order.items.forEach((item) => {
+      if (!item.name || item.name.startsWith("GST (")) return;
       const cat = item.desc || "Uncategorized";
       if (!categorySales[cat]) categorySales[cat] = 0;
       categorySales[cat] += item.price * item.qty;
@@ -1856,16 +1859,16 @@ export default function POSBilling() {
                             )}
                           </div>
 
-                          {/* Price, Qty, and Trash (Flex row on mobile, separate grid cells on desktop) */}
-                          <div className="col-span-5 flex items-center justify-between sm:grid sm:grid-cols-5 gap-3 sm:gap-4 w-full">
+                          {/* Price, Qty, and Trash (Grid layout to prevent overflow on tiny 300px screens) */}
+                          <div className="col-span-5 grid grid-cols-[minmax(0,1fr)_auto_auto] sm:grid-cols-5 gap-2 sm:gap-4 w-full items-center">
                             {/* Price Input */}
-                            <div className="flex-1 sm:col-span-2 flex items-center gap-2 sm:block">
+                            <div className="sm:col-span-2 flex items-center gap-1.5 sm:gap-2 sm:block min-w-0 w-full">
                               <span className="text-[10px] font-bold text-[#000000] uppercase sm:hidden shrink-0">
                                 Price:
                               </span>
                               <input
                                 type="number"
-                                className="w-full min-w-[70px] sm:min-w-0 text-center bg-white border border-black/10 focus:border-[#FF0000] rounded-lg px-3 py-2 text-xs font-semibold text-[#000000] focus:outline-none transition-colors"
+                                className="w-full min-w-0 text-center bg-white border border-black/10 focus:border-[#FF0000] rounded-lg px-2 sm:px-3 py-2 text-xs font-semibold text-[#000000] focus:outline-none transition-colors"
                                 value={item.price || ""}
                                 onChange={(e) =>
                                   updateItem(
@@ -1880,7 +1883,7 @@ export default function POSBilling() {
                             </div>
 
                             {/* Quantity Counter */}
-                            <div className="flex-1 sm:col-span-2 flex items-center justify-end gap-2 sm:block">
+                            <div className="sm:col-span-2 flex items-center justify-end gap-1.5 sm:gap-2 sm:block shrink-0">
                               <span className="text-[10px] font-bold text-[#000000] uppercase sm:hidden shrink-0">
                                 Qty:
                               </span>
@@ -2077,9 +2080,9 @@ export default function POSBilling() {
 
                     {/* GST Section (Below Delivery, Above Grand Total) */}
                     <div className="pt-2">
-                      <div className="flex justify-between items-center">
+                      <div className="flex flex-wrap justify-between items-center gap-2">
                         <label className="flex items-center gap-3 cursor-pointer">
-                          <div className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${applyGST ? 'bg-[#FF0000]' : 'bg-gray-300'}`}>
+                          <div className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${applyGST ? 'bg-[#FF0000]' : 'bg-gray-300'}`}>
                             <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${applyGST ? 'translate-x-4' : 'translate-x-1'}`} />
                           </div>
                           <input
@@ -2426,8 +2429,8 @@ export default function POSBilling() {
                                     WhatsApp
                                   </button>
                                   <button
-                                    onClick={() => window.open(`/invoice/${order.id}`, '_blank')}
-                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FF0000] hover:bg-[#CC0000] text-white rounded-md text-[9px] font-bold uppercase tracking-wider transition-colors whitespace-nowrap"
+                                    onClick={() => setActiveInvoiceId(order.id)}
+                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FF0000] hover:bg-[#CC0000] text-white rounded-md text-[9px] font-bold uppercase tracking-wider transition-colors whitespace-nowrap cursor-pointer"
                                   >
                                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -3679,6 +3682,33 @@ export default function POSBilling() {
           </div>
         </footer>
       </main>
+
+      {/* Invoice Modal */}
+      {activeInvoiceId && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-2 sm:p-4 animate-in fade-in duration-200">
+          <div className="bg-[#FAFAEB] rounded-2xl shadow-2xl w-full max-w-4xl h-[90vh] sm:h-[85vh] flex flex-col overflow-hidden transform scale-100 animate-in zoom-in-95 duration-200">
+            <div className="px-4 py-3 flex justify-between items-center bg-white border-b border-black/10 shrink-0">
+              <h3 className="font-bold text-sm uppercase tracking-wider flex items-center gap-2 text-[#000000]">
+                <Printer className="w-4 h-4 text-[#FF0000]" />
+                Invoice #{activeInvoiceId}
+              </h3>
+              <button
+                onClick={() => setActiveInvoiceId(null)}
+                className="w-8 h-8 flex items-center justify-center bg-black hover:bg-black/80 text-white rounded-md transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="flex-1 w-full bg-gray-50 overflow-hidden relative">
+              <iframe 
+                src={`/invoice/${activeInvoiceId}`} 
+                className="w-full h-full border-none absolute inset-0"
+                title={`Invoice ${activeInvoiceId}`}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
