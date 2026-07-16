@@ -844,7 +844,9 @@ export default function POSBilling() {
     }
     if (analyticsPeriod === "week") {
       const startOfWeek = new Date(now);
-      startOfWeek.setDate(now.getDate() - now.getDay()); // Sunday start of week
+      const dayOfWeek = startOfWeek.getDay();
+      const distToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+      startOfWeek.setDate(startOfWeek.getDate() + distToMonday); // Monday start of week
       startOfWeek.setHours(0, 0, 0, 0);
       return orderDate >= startOfWeek;
     }
