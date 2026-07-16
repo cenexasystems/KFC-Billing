@@ -180,7 +180,7 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#e5e5e5]/40">
-                {order.order_items.map((item: any, index: number) => (
+                {order.order_items.filter((i: any) => !i.snapshot_name.startsWith('GST (')).map((item: any, index: number) => (
                   <tr key={index} className="group">
                     <td className="py-6 pr-4 print:py-3">
                       <p className="text-sm font-bold text-[#E60000]">{item.snapshot_name}</p>
@@ -200,28 +200,43 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
 
             {/* Calculations */}
             <div className="w-full sm:w-1/2 space-y-3">
-              {(order.discount_amount > 0 || order.delivery_fee > 0) && (
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-[#666666] font-bold uppercase tracking-wider">Subtotal</span>
-                  <span className="font-bold text-[#000000]">₹{order.subtotal.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                </div>
-              )}
-              
-              {order.discount_amount > 0 && (
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-[#666666] font-bold uppercase tracking-wider">
-                    Discount {order.discount_type === 'PERCENT' ? `(${order.discount_value}%)` : ''}
-                  </span>
-                  <span className="font-bold text-[#E11D48]">-₹{order.discount_amount.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                </div>
-              )}
+              {(() => {
+                const gstItem = order.order_items?.find((i: any) => i.snapshot_name.startsWith('GST ('));
+                const showSubtotal = order.discount_amount > 0 || order.delivery_fee > 0 || !!gstItem;
+                return (
+                  <>
+                    {showSubtotal && (
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-[#666666] font-bold uppercase tracking-wider">Subtotal</span>
+                        <span className="font-bold text-[#000000]">₹{order.subtotal.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                      </div>
+                    )}
+                    
+                    {order.discount_amount > 0 && (
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-[#666666] font-bold uppercase tracking-wider">
+                          Discount {order.discount_type === 'PERCENT' ? `(${order.discount_value}%)` : ''}
+                        </span>
+                        <span className="font-bold text-[#E11D48]">-₹{order.discount_amount.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                      </div>
+                    )}
 
-              {order.delivery_fee > 0 && (
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-[#666666] font-bold uppercase tracking-wider">Delivery Fee</span>
-                  <span className="font-bold text-[#000000]">₹{order.delivery_fee.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                </div>
-              )}
+                    {gstItem && (
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-[#666666] font-bold uppercase tracking-wider">{gstItem.snapshot_name}</span>
+                        <span className="font-bold text-[#000000]">₹{(gstItem.snapshot_price * gstItem.quantity).toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                      </div>
+                    )}
+
+                    {order.delivery_fee > 0 && (
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-[#666666] font-bold uppercase tracking-wider">Delivery Fee</span>
+                        <span className="font-bold text-[#000000]">₹{order.delivery_fee.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
 
               <div className="border-t border-[#e5e5e5] pt-4 mt-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 sm:gap-2">
                 <span className="text-sm font-black text-[#FCD814] uppercase tracking-widest shrink-0">Total Amount</span>

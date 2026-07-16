@@ -706,12 +706,15 @@ export default function POSBilling() {
       }
       newOrderId = `INV-${currentYear}-${randStr}`;
     }
-    const itemsToSave = items.filter((i) => i.name && i.price > 0);
-
-    if (itemsToSave.length === 0) {
-      alert("Please add at least one valid item with a price greater than 0.");
+    // Strict validation: every single row must have a name and a price > 0
+    const hasInvalidItem = items.some(i => !i.name || i.name.trim() === "" || i.price === undefined || i.price <= 0);
+    
+    if (hasInvalidItem || items.length === 0) {
+      alert("Please ensure all items have a valid name and a price greater than 0. Remove any empty rows before proceeding.");
       return;
     }
+
+    const itemsToSave = items;
 
     // Format unique phone: phone_name_timestamp to bypass unique constraint
     const dbPhone = `${customerPhone}_${customerName || "Guest"}_${Date.now()}`;
@@ -765,13 +768,17 @@ export default function POSBilling() {
     const receiptEmoji = String.fromCodePoint(0x1F4E6);
 
     let message = `${shopEmoji} *Korean Fried Chicken* ${shopEmoji}\n\n`;
-    message += `${checkEmoji} Thank you for shopping with us!\n\n`;
+    message += `${checkEmoji} Here are your invoice details!\n\n`;
     
+    message += `*Subtotal:* ₹${subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}\n`;
     if (calculatedDiscount > 0) {
-      message += `${tagEmoji} Discount Applied: ₹${calculatedDiscount.toLocaleString(undefined, { minimumFractionDigits: 2 })}\n`;
+      message += `*Discount Applied:* -₹${calculatedDiscount.toLocaleString(undefined, { minimumFractionDigits: 2 })}\n`;
+    }
+    if (applyGST && gstAmount > 0) {
+      message += `*GST (${gstPercentage}%):* ₹${gstAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}\n`;
     }
     
-    message += `${moneyEmoji} Total Amount: ₹${grandTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}\n\n`;
+    message += `\n${moneyEmoji} *Total Amount:* ₹${grandTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}\n\n`;
     message += `${receiptEmoji} View and download your detailed digital receipt here:\n${invoiceUrl}`;
 
     const encodedMessage = encodeURIComponent(message);
@@ -789,7 +796,10 @@ export default function POSBilling() {
       customerName: customerName || "Guest",
       customerPhone,
       source: isOnline ? "ONLINE" : "OFFLINE",
-      items: itemsToSave,
+      items: [
+        ...itemsToSave,
+        ...(applyGST && gstAmount > 0 ? [{ id: Math.random().toString(), name: `GST (${gstPercentage}%)`, desc: "", price: gstAmount, qty: 1 }] : [])
+      ],
       subtotal,
       discount: calculatedDiscount,
       discountType: discountType === "percent" ? "PERCENT" : "FIXED",
@@ -1350,11 +1360,17 @@ export default function POSBilling() {
     let message = `${shopEmoji} *Korean Fried Chicken* ${shopEmoji}\n\n`;
     message += `${checkEmoji} Here are your invoice details!\n\n`;
     
+    message += `*Subtotal:* ₹${order.subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}\n`;
     if (order.discount > 0) {
-      message += `${tagEmoji} Discount Applied: ₹${order.discount.toLocaleString(undefined, { minimumFractionDigits: 2 })}\n`;
+      message += `*Discount Applied:* -₹${order.discount.toLocaleString(undefined, { minimumFractionDigits: 2 })}\n`;
     }
     
-    message += `${moneyEmoji} Total Amount: ₹${order.grandTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}\n\n`;
+    const gstItem = order.items.find(i => i.name && i.name.startsWith("GST ("));
+    if (gstItem) {
+      message += `*${gstItem.name}:* ₹${(gstItem.price * gstItem.qty).toLocaleString(undefined, { minimumFractionDigits: 2 })}\n`;
+    }
+    
+    message += `\n${moneyEmoji} *Total Amount:* ₹${order.grandTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}\n\n`;
     message += `${receiptEmoji} View and download your detailed digital receipt here:\n${invoiceUrl}`;
 
     const encodedMessage = encodeURIComponent(message);
@@ -2727,7 +2743,7 @@ export default function POSBilling() {
                                   </td>
                                   <td className="p-3 text-xs font-semibold text-[#000000] text-right">
                                     {order.items.reduce(
-                                      (sum, i) => sum + i.qty,
+                                      (sum, i) => sum + ((i.name && !i.name.startsWith("GST (")) ? i.qty : 0),
                                       0,
                                     )}{" "}
                                     pcs
