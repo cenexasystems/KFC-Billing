@@ -1365,9 +1365,12 @@ export default function POSBilling() {
       message += `*Discount Applied:* -₹${order.discount.toLocaleString(undefined, { minimumFractionDigits: 2 })}\n`;
     }
     
-    const gstItem = order.items.find(i => i.name && i.name.startsWith("GST ("));
-    if (gstItem) {
-      message += `*${gstItem.name}:* ₹${(gstItem.price * gstItem.qty).toLocaleString(undefined, { minimumFractionDigits: 2 })}\n`;
+    const gstItem = order.items.find(i => i.name && i.name.startsWith("GST"));
+    const calculatedGst = order.grandTotal - (order.subtotal - order.discount + order.deliveryFee);
+    
+    if (calculatedGst > 0.1) {
+      const gstLabel = gstItem ? gstItem.name : "GST";
+      message += `*${gstLabel}:* ₹${calculatedGst.toLocaleString(undefined, { minimumFractionDigits: 2 })}\n`;
     }
     
     message += `\n${moneyEmoji} *Total Amount:* ₹${order.grandTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}\n\n`;
